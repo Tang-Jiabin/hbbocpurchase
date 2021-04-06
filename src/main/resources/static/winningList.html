@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>我的奖品</title>
+    <link type="text/css" rel="stylesheet" href="css/css.css"/>
+    <meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes"/>
+
+
+    <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="js/tab.js"></script>
+
+    <script type="text/javascript">
+
+        function jinxing(data) {
+            $('#weijieshu').show()
+            $('#text').html('请于'+data+'七星彩开奖后查看中奖结果')
+        }
+        function guanbi(){
+            $('#weijieshu').hide()
+        }
+
+        $(function () {
+
+            $.ajax({
+                url: 'https://boc.pay.zhongyunkj.cn/hbbocpurchase/luckDraw/getWinningList',
+                type: 'get',
+                dataType: 'json',
+                data: {"prizeId": localStorage.getItem("prizeId"), "customerId": localStorage.getItem("customerId")},
+                success: function (data) {
+                    if (data.status != 200) {
+                        alert(data.msg)
+                    } else {
+                        let me = data.data.me;
+                        let all = data.data.whole;
+
+                        let meCount = me.length;
+                        let allCount = all.length;
+
+                        let trHead = '<tr>' +
+                            '<td bgcolor="#fbefbe" style="color:#c72123"><strong>期数</strong></td>' +
+                            '<td bgcolor="#fbefbe" style="color:#c72123"><strong>奖品</strong></td>' +
+                            '<td bgcolor="#fbefbe" style="color:#c72123"><strong>中奖名单</strong></td>' +
+                            '</tr>';
+                        let trBody = '';
+                        let url = ''
+                        for (let i = 0; i < allCount; i++) {
+                            let ck = ''
+                            if (all[i].status === '进行中') {
+                                url = '#'
+                                ck = "jinxing('"+all[i].drawDate+"')"
+                            } else  if (all[i].status === '未开始') {
+                                url = '#'
+                            }else {
+                                url = './winningListDetails.html?prizeId=' + all[i].prizeId + ''
+                            }
+
+                            trBody = trBody + '<tr>' +
+                                '<td>' + all[i].batch + '</td>' +
+                                '<td>' + all[i].name + '</td>' +
+                                '<td><a onclick="'+ck+'" href="' + url + '">' + all[i].status + '</a></td>' +
+                                '</tr>';
+                        }
+
+                        $("#tb-1").html(trHead + trBody)
+
+                        trHead = '<tr>' +
+                            '<td bgcolor="#fbefbe" style="color:#c72123"><strong>期数</strong></td>' +
+                            '<td bgcolor="#fbefbe" style="color:#c72123"><strong>奖品</strong></td>' +
+                            '<td bgcolor="#fbefbe" style="color:#c72123"><strong>中奖名单</strong></td>' +
+                            '</tr>'
+                        trBody = ''
+                        url = ''
+                        for (let i = 0; i < meCount; i++) {
+                            if (me[i].status === '未中奖') {
+                                url = './fail.html?prizeId=' + me[i].prizeId + ''
+                            } else if (me[i].status === '已中奖领奖') {
+                                url = './win.html?prizeId=' + me[i].prizeId + ''
+                            } else if (me[i].status === '已弃奖') {
+                                url =  './abandon.html?prizeId=' + me[i].prizeId + ''
+                            }else {
+                                url = '#'
+                            }
+
+
+
+                            trBody = trBody + '<tr>' +
+                                '<td>' + me[i].batch + '</td>' +
+                                '<td>' + me[i].name + '</td>' +
+                                '<td><a onclick="jinxing()" href="' + url + '">' + me[i].status + '</a></td>' +
+                                '</tr>';
+                        }
+                        $("#tb-2").html(trHead + trBody)
+                    }
+
+                },
+                error: function (data) {
+                    alert(data.msg)
+                }
+            })
+
+
+        })
+
+    </script>
+</head>
+
+<body style="background-color:#fffbe8">
+
+<!--wode-->
+<div class="wode"><img src="images/mingdan_06.jpg"></div>
+<!--wode-->
+<div class="zjmd">
+    <div class="tab"><a href="javascript:void(0)" class="sel" id="ps01" onclick="pros_hover(1)">全部</a> <a
+            href="javascript:void(0)" id="ps02" onclick="pros_hover(2)">我参与的</a>
+        <div class="clear"></div>
+    </div>
+    <div id="pros01">
+        <table width="100%" border="0" class="tb" id="tb-1">
+            <tr>
+                <td bgcolor="#fbefbe" style="color:#c72123"><strong>期数</strong></td>
+                <td bgcolor="#fbefbe" style="color:#c72123"><strong>奖品</strong></td>
+                <td bgcolor="#fbefbe" style="color:#c72123"><strong>中奖名单</strong></td>
+            </tr>
+
+        </table>
+    </div>
+    <div id="pros02" style="display:none">
+        <table width="100%" border="0" class="tb" id="tb-2">
+            <tr>
+                <td bgcolor="#fbefbe" style="color:#c72123"><strong>期数</strong></td>
+                <td bgcolor="#fbefbe" style="color:#c72123"><strong>奖品</strong></td>
+                <td bgcolor="#fbefbe" style="color:#c72123"><strong>中奖名单</strong></td>
+            </tr>
+
+        </table>
+
+        <!--<div class="zanwu"><img src="images/zanwu.png"><p>暂时没有任何信息，快去参与活动吧~</p></div>-->
+
+    </div>
+</div>
+<div id="weijieshu" class="zhifu_bg0" style="display:none;">
+    <div class="zhifu_c8">
+        <div onclick="guanbi()" class="close"><a href="javascript:void(0)" class="zhifu_quxiao0"><img src="images/close.png"/></a>
+        </div>
+        <p class="zhifu_c3_img"><img src="images/weixiao.png"/></p>
+        <p><strong>暂未开奖</strong>
+        <p><strong id="text">请于七星彩开奖后查看中奖结果</strong></p>
+    </div>
+</div>
+<div class="back2"><a href="./index.html"><img src="images/back2.png"/></a></div>
+</body>
+</html>

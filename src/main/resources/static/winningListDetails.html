@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>我的奖品</title>
+    <link type="text/css" rel="stylesheet" href="css/css.css"/>
+    <meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes"/>
+
+
+    <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+
+    <script type="text/javascript">
+
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+
+        $(function () {
+
+            let prizeId = GetQueryString("prizeId")
+
+            $.ajax({
+                // url: '/hbbocpurchase/luckDraw/getWinningDetails',
+                url: 'https://boc.pay.zhongyunkj.cn/hbbocpurchase/luckDraw/getWinningDetails',
+                type: 'get',
+                dataType: 'json',
+                data: {"prizeId": prizeId, "customerId": localStorage.getItem("customerId")},
+                success: function (data) {
+
+                    if (data.status != 200) {
+                        alert(data.msg)
+                    } else {
+                        let batch = data.data.batch
+                        let prizeName = data.data.prizeName
+                        let prizeImg = data.data.prizeImg
+                        let prizeNumber = data.data.prizeNumber
+                        let code1 = data.data.code1
+                        let code2 = data.data.code2
+                        let participants = data.data.participants
+                        let userDrawJsonList = data.data.userDrawJsonList
+
+                        $('#prizeImg').attr("src", prizeImg)
+                        $('#prizeName').html(prizeName)
+                        $('#PrizeNumber').html("奖品数量：" + prizeNumber + "份")
+                        $('#code1').html(code1 + "、" + code2)
+                        $('#participants').html("本期共" + participants + "人参与")
+
+                        let trhead = '<tr>' +
+                            '<td bgcolor="#fbefbe" style="color:#c72123"><strong>中奖者</strong></td>' +
+                            '<td bgcolor="#fbefbe" style="color:#c72123"><strong>中奖码</strong></td>' +
+                            '</tr>'
+                        let trbody = ''
+                        for (let i = 0; i < userDrawJsonList.length; i++) {
+                            trbody += '<tr>' +
+                                '<td>' + userDrawJsonList[i].customerId + '</td>' +
+                                '<td><a href="#">' + userDrawJsonList[i].code + '</a></td>' +
+                                '</tr>'
+                        }
+                        $('#tb-1').html(trhead + trbody)
+
+                    }
+
+                },
+                error: function (data) {
+                    alert(data.msg)
+                }
+            })
+
+        })
+
+
+    </script>
+
+</head>
+
+<body style="background-color:#a00806">
+
+<!--wode-->
+<div class="wode"><img src="images/mingxi_03.jpg"></div>
+<!--wode-->
+<div class="jingpin">
+<!--    dianshi.png-->
+    <div class="jiangpin_l"><img id="prizeImg" src="images/jiangpin.png"></div>
+    <div class="jiangpin_r">
+        <p id="prizeName">HUAWEI P40 5G</p>
+        <p id="prizeNumber">奖品数量：16份</p>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="mingdan_t"><img src="images/mingdan_t.png"></div>
+<div class="mingdan_c">
+    <div class="mingdan_l">
+        <p id="participants">本期共36888人参与</p>
+        <p>中奖号码分别为：</p>
+    </div>
+    <div class="mingdan_r" id="code1">1688、4587</div>
+    <div class="clear"></div>
+</div>
+<div class="mingdan_c">
+    <table width="100%" border="0" class="tb" id="tb-1">
+        <tr>
+            <td bgcolor="#fbefbe" style="color:#c72123"><strong>中奖者</strong></td>
+            <td bgcolor="#fbefbe" style="color:#c72123"><strong>中奖码</strong></td>
+        </tr>
+        <tr>
+            <td>139****8802</td>
+            <td><a href="#">1668</a></td>
+        </tr>
+        <tr>
+            <td>139****8802</td>
+            <td><a href="#">1668</a></td>
+        </tr>
+        <tr>
+            <td>139****8802</td>
+            <td><a href="#">1668</a></td>
+        </tr>
+        <tr>
+            <td>139****8802</td>
+            <td><a href="#">1668</a></td>
+        </tr>
+        <tr>
+            <td>139****8802</td>
+            <td><a href="#">1668</a></td>
+        </tr>
+        <tr>
+            <td>139****8802</td>
+            <td><a href="#">1668</a></td>
+        </tr>
+        <tr>
+            <td>139****8802</td>
+            <td><a href="#">1668</a></td>
+        </tr>
+    </table>
+</div>
+<div class="kaijiang_c">
+    <p align="center"><strong>开奖说明</strong></p>
+    开奖结果取每期最后一个周日七星彩（国家体育彩票）开奖后，抽奖码与七星彩前四位和后四位相同数字相同排列的用户，可获得本次活动奖品；　
+
+</div>
+<div class="back2"><a href="./index.html"><img src="images/back2.png"/></a></div>
+</body>
+</html>

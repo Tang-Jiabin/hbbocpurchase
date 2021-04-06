@@ -1,0 +1,563 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <title>华为爆品，一元夺取</title>
+    <link href="css/index.css" rel="stylesheet" type="text/css">
+    <link href="css/css.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="js/tab.js"></script>
+    <script src="js/fontscroll.js"></script>
+
+
+    <script type="text/javascript">
+
+        function timeVif() {
+            let date = new Date();
+            let startDate = new Date();
+            startDate.setFullYear(2021)
+            startDate.setMonth(0);
+            startDate.setDate(1)
+            startDate.setHours(0)
+            startDate.setMinutes(0)
+            startDate.setSeconds(0)
+            if (startDate >= date) {
+                let customerId = localStorage.getItem("customerId")
+                if (customerId === '233173866' || customerId === '4100676' || customerId === '306476657') {
+                    return false;
+                }
+                $('#zanweikaishi').show();
+                return true;
+            }
+            return false;
+        }
+
+        $(document).ready(function () {
+
+            $('#body').hide()
+
+            initDemo();
+
+            setInterval(setDate, 1000)
+
+
+            $('#FontScroll').FontScroll({time: 3000, num: 1});
+
+            $("#huodongguize").click(function () {
+                $(".huodongguize_bg").show();
+            });
+            $("#hide2").click(function () {
+                $(".huodongguize_bg").hide();
+            });
+            $("#zhifu0").click(function () {
+                $(".zhifu_bg0").show();
+            });
+            $(".zhifu_quxiao0").click(function () {
+                if (timeVif()) {
+                    window.c_plugins.merchantBridge.goToNative(function () {
+                    }, function (err) {
+                    }, {
+                        page: '0'
+                    })
+                }
+                $(".zhifu_bg0").hide();
+            });
+            $("#zhifu_quxiao00").click(function () {
+                $(".zhifu_bg0").hide();
+            });
+            $("#zhifu").click(function () {
+                if (timeVif()) {
+                    return;
+                }
+                getPayStatus();
+            });
+            $("#zhifu2").click(function () {
+                if (timeVif()) {
+                    return;
+                }
+                getPayStatus();
+            });
+            $("#zhifu_quxiao").click(function () {
+                $(".zhifu_bg").hide();
+            });
+
+            $(".yiyuan").click(function () {
+                // if (timeVif()) {
+                //     return;
+                // }
+                $(".zhifu_bg").hide();
+                pay()
+            });
+
+            $("#zhifu_quxiao2").click(function () {
+                $(".zhifu_bg2").hide();
+            });
+
+            $("#zhifu_quxiao3").click(function () {
+                $(".zhifu_bg3").hide();
+            });
+            $(".zj_quxiao").click(function () {
+                $(".zhongjiang_bg").hide();
+                $(".weizhongjiang_bg").hide();
+            });
+
+        });</script>
+
+    <script type="text/javascript">
+        function setDate() {
+            let hour = Number($('#hour').html());
+            let min = Number($('#min').html());
+            let sec = Number($('#sec').html());
+
+            sec = sec - 1
+            if (sec <= 0) {
+                sec = 59
+                min = min - 1
+                if (min <= 0) {
+                    min = 59
+                    hour = hour - 1
+                    if (hour <= 0) {
+                        hour = 0
+                    }
+                }
+            }
+            $('#sec').html(sec <= 9 ? "0" + sec : sec)
+            $('#min').html(min <= 9 ? "0" + min : min)
+            $('#hour').html(hour <= 9 ? "0" + hour : hour)
+        }
+
+        function time() {
+            $.ajax({
+                url: 'https://boc.pay.zhongyunkj.cn/hbbocpurchase/pay/selectOrderStatus',
+                type: 'get',
+                dataType: 'json',
+                data: {
+                    "customerId": localStorage.getItem("customerId"),
+                    "prizeId": localStorage.getItem("prizeId")
+                },
+                success: function (data) {
+
+                    if (data.status === 200) {
+                        let code = data.data;
+                        localStorage.setItem("code", code)
+                        $("#code").html(code)
+                        $('.zf').hide();
+                        $('.ycy').show();
+                        $('#zhifujieguo').hide();
+                    } else {
+                        setTimeout(time, 1000)
+                    }
+
+                },
+                error: function (data) {
+                    alert(data.msg)
+                }
+            })
+        }
+
+        function initDemo() {
+            /*****引入cordova**/
+            window.onload = function () {
+                $('.ycy').hide();
+                /**
+                 * 识别设备终端
+                 */
+                window.terminal = (function () {
+                    let u = navigator.userAgent;
+
+                    return { //浏览器版本信息
+                        trident: u.indexOf('Trident') > -1,
+                        presto: u.indexOf('Presto') > -1,
+                        webKit: u.indexOf('AppleWebKit') > -1,
+                        gecko: !(-1 >= u.indexOf('KHTML') || !(u.indexOf('Gecko') > -1)),
+                        mobile: !!u.match(/AppleWebKit.*Mobile.*/),
+                        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/),
+                        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1,
+                        iPhone: u.indexOf('iPhone') > -1,
+                        iPad: u.indexOf('iPad') > -1,
+                        webApp: u.indexOf('Safari') > -1,
+                        weixin: !(-1 >= u.indexOf('MicroMessenger') || !u.replace(/.*(MicroMessenger\/[^\s]*).*/, "$1").replace(
+                            "MicroMessenger/", "")) || false,
+                        appVersion: u.indexOf('bocapp(') > -1 ? u.match(/bocapp\(\S+\)/)[0].slice(7, -1) : '3.0.0'
+                    };
+                })()
+                /**
+                 * 引入cordova
+                 */
+                let script = document.createElement('script');
+
+                let pth = "https://ebsnew.boc.cn/bocphone/BocMerchant/" // 生产环境
+
+                if (window.terminal.iPhone) {
+                    script.src = pth + 'paylib/ios.js'
+                } else if (window.terminal.android) {
+                    script.src = pth + 'paylib/android.js'
+                } else {
+                    alert('无法识别终端类型')
+                }
+                document.getElementsByTagName('head')[0].appendChild(script);
+
+                /**
+                 * 绑定事件---调用cordova
+                 */
+                document.addEventListener('deviceready', function () {
+                    window.c_plugins.merchantBridge.judgeLogin(function (loginData) {
+
+                        if (loginData.isLogin === "no") {
+                            noLogin()
+                        } else {
+                            getBocCustomerAllInfo()
+                        }
+
+                    }, function (err) {
+                        alert(err.message || err || '网络错误，请检查网络连接');
+                    }, {})
+
+                })
+            }
+        }
+
+        function noLogin() {
+            /*******跳转登录********/
+            alert('请先登陆手机银行');
+            window.c_plugins.merchantBridge.continueAfterLogin(function () {
+                getBocCustomerAllInfo()
+            }, function (err) {
+                alert(err.message || err || '网络错误，请检查网络连接');
+            }, {})
+        }
+
+
+        function getBocCustomerAllInfo() {
+            $('.caozuo_bg').show()
+
+            window.c_plugins.merchantBridge.getBocCustomerAllInfo(function (data) {
+
+                $.ajax({
+                    cache: false,
+                    type: "POST",
+                    // url: "/hbbocpurchase/user/dealCusInfo",
+                    url: "https://boc.pay.zhongyunkj.cn/hbbocpurchase/user/dealCusInfo",
+                    data: {
+                        data: JSON.stringify(data)
+                    },
+                    dataType: "json",
+                    async: false,
+                    error: function (request) {
+                        alert("系统繁忙，请重试！");
+                    },
+                    success: function (result) {
+
+                        if (result.status === 411) {
+                            alert(result.msg)
+                            window.c_plugins.merchantBridge.goToNative(function () {
+                            }, function (err) {
+                            }, {
+                                page: '0'
+                            })
+                        } else {
+                            $('#body').show()
+                        }
+
+                        if (result.status === 410) {
+                            $('#renshuyiman').show();
+                            window.c_plugins.merchantBridge.goToNative(function () {
+                            }, function (err) {
+                            }, {
+                                page: '0'
+                            })
+                        }
+
+                        let participants = result.data.participants
+                        let drawDate = result.data.drawDate
+                        let code = result.data.code
+                        let codeMsg = result.data.codeMsg
+
+                        localStorage.setItem("customerId", result.data.customerId);
+                        localStorage.setItem("prizeId", result.data.prizeId);
+                        localStorage.setItem("code", code)
+                        localStorage.setItem("participants", participants)
+                        localStorage.setItem("drawDate", drawDate)
+
+
+                        $('#participants').html(participants)
+                        $('#drawDate').html(drawDate)
+                        $('#khh').html(result.data.customerId)
+
+                        if (code !== '0') {
+                            $("#code").html(code)
+                            $("#codeMsg").html(codeMsg)
+                            $("#codeUrl").attr("url", "")
+                            $('.zf').hide();
+                            $('.ycy').show();
+                        }
+                    }
+                });
+            })
+        }
+
+        function getPayStatus() {
+            $.ajax({
+                url: 'https://boc.pay.zhongyunkj.cn/hbbocpurchase/pay/getPayStatus',
+                type: 'get',
+                dataType: 'json',
+                data: {"customerId": localStorage.getItem("customerId"), "prizeId": localStorage.getItem("prizeId")},
+                success: function (data) {
+                    console.log(data.status)
+                    console.log(data.msg)
+                    console.log(data.data)
+
+                    if (data.status !== 200) {
+                        if (data.status === 411) {
+                            //活动暂未开始
+                            $('#zanweikaishi').show();
+                        } else if (data.status === 413) {
+                            //您不是河北地区用户
+                            $('#bushihebei').show();
+                        } else if (data.status === 414) {
+                            //本月已参加过活动
+                            $('#yijingcanjia').show();
+                        } else if (data.status === 415) {
+                            //当前活动参与人数已满
+                            $('#renshuyiman').show();
+                        } else {
+                            //请重新授权
+                            $('#chongxinshouquan').show();
+                        }
+                    } else {
+                        if (data.data.prizeId === 0) {
+                            $(".zhifu_bg").show();
+                        } else {
+                            let url = "";
+                            console.log(data.data.status)
+                            if (data.data.status === 1) {
+                                url = "./winningNumber.html"
+                            } else if (data.data.status === 2) {
+                                url = "./fail.html?prizeId=" + data.data.prizeId + ""
+                            } else if (data.data.status === 3) {
+                                url = "./win.html?prizeId=" + data.data.prizeId + ""
+                            }
+                            window.location.href = url
+                        }
+
+                    }
+
+                },
+                error: function (data) {
+                    alert(data.msg)
+                }
+            })
+        }
+
+        function pay1() {
+            $.ajax({
+                url: 'https://boc.pay.zhongyunkj.cn/hbbocpurchase/pay/getPayParam1',
+                type: 'POST',
+                dataType: 'json',
+                data: {},
+                success: function (result) {
+                    window.c_plugins.merchantBridge.callPaymentControl(function (res) {
+
+                        if (res.orderStatus === '1') {
+                            alert("支付成功")
+                        } else {
+                            alert("支付失败")
+                        }
+
+                    }, function (err) {
+                        alert(err.message || err || '网络错误，请检查网络连接');
+                    }, result)
+                },
+                error: function (data) {
+                    alert(data)
+                }
+            })
+        }
+
+        function pay() {
+
+            $.ajax({
+                url: 'https://boc.pay.zhongyunkj.cn/hbbocpurchase/pay/getPayParam',
+                type: 'POST',
+                dataType: 'json',
+                data: {"customerId": localStorage.getItem("customerId"), "prizeId": localStorage.getItem("prizeId")},
+                success: function (result) {
+                    window.c_plugins.merchantBridge.callPaymentControl(function (res) {
+
+
+                        if (res.orderStatus === '1') {
+                            //支付成功
+                            $('#zhifujieguo').show();
+                            setTimeout(time, 1000)
+
+                        } else {
+
+                            $.ajax({
+                                url: 'https://boc.pay.zhongyunkj.cn/hbbocpurchase/pay/cancelPay',
+                                type: 'get',
+                                dataType: 'json',
+                                data: {
+                                    "customerId": localStorage.getItem("customerId"),
+                                    "prizeId": localStorage.getItem("prizeId")
+                                },
+                                success: function (data) {
+                                },
+                                error: function (data) {
+                                }
+                            })
+
+                        }
+
+                    }, function (err) {
+                        alert(err.message || err || '网络错误，请检查网络连接');
+                    }, result)
+                },
+                error: function (data) {
+
+                }
+            })
+        }
+
+    </script>
+
+</head>
+
+<body id="body" style="background-color:#a00806">
+<div class="huodongguize_but" id="huodongguize"><img src="images/huodongguize.png"/></div>
+<div class="kefu"><a href="tel:4006506038"><img src="images/kefu.png"/></a></div>
+
+<div class="index_bg"><img src="images/index_02.jpg"/></div>
+<div class="caozuo_bg" style="display: none">
+    <div class="caozuo_img"><img src="images/caozuo_bg.png"/></div>
+    <div class="caozuo_c">
+        <div class="yicanyu">本期已有<strong id="participants">0</strong>人参与</div>
+        <div class="daojishi" id="drawDate"></div>
+
+        <!--未抽奖显示按钮-->
+        <div class="zf"><a href="javascript:void(0)" id="zhifu"><img src="images/but1.png"/></a></div>
+        <!--未抽奖显示按钮-->
+
+        <div id="zhifu2" class="ycy"><a href="#">
+            <name id="codeMsg">已参与，抽奖码</name>
+            <strong id="code">XXXX</strong>▶</a>
+        </div>
+
+        <div class="shuoming">未中奖1元活动结束后统一退回</div>
+        <div class="kehuhao"
+             style="width:100%; text-align:center; line-height:15px;  color:#b52a00; font-size:14px;  font-weight:bold;">
+            您的客户号：<span id="khh">888888</span></div>
+    </div>
+</div>
+<div class="gonglve"><a style="color:#ffffff" href="./strategy.html">手气王攻略</a></div>
+
+<div class="mingdan"><a href="./winningList.html"><img src="images/mingdan.png"/></a></div>
+<!--很遗憾，您本月已经参加过了
+快去参与我行其他活动吧~~-->
+<div id="yijingcanjia" class="zhifu_bg0" style="display:none;">
+    <div class="zhifu_c8">
+        <div class="close"><a href="javascript:void(0)" class="zhifu_quxiao0"><img src="images/close.png"/></a></div>
+        <p class="zhifu_c3_img"><img src="images/weixiao.png"/></p>
+        <p><strong>很遗憾，您本月已经参加过了</strong>
+        <p><strong>快去参与我行其他活动吧~</strong></p>
+    </div>
+</div>
+<!--很遗憾，您本月已经参加过了快去参与我行其他活动吧~~-->
+
+<!--很遗憾，您不是河北地区用户暂不能参与此活动-->
+<div id="renshuyiman" class="zhifu_bg0" style="display:none;">
+    <div class="zhifu_c8">
+        <div class="close"><a href="javascript:void(0)" class="zhifu_quxiao0"><img src="images/close.png"/></a></div>
+        <p class="zhifu_c3_img"><img src="images/weixiao.png"/></p>
+        <p><strong>请重新授权 </strong>
+        <p><strong> </strong></p>
+
+    </div>
+</div>
+<!--很遗憾，您不是河北地区用户暂不能参与此活动-->
+
+<!--很遗憾，您不是河北地区用户暂不能参与此活动-->
+<div id="renshuyiman" class="zhifu_bg0" style="display:none;">
+    <div class="zhifu_c8">
+        <div class="close"><a href="javascript:void(0)" class="zhifu_quxiao0"><img src="images/close.png"/></a></div>
+        <p class="zhifu_c3_img"><img src="images/weixiao.png"/></p>
+        <p><strong>很遗憾，参与人数已满 </strong>
+        <p><strong> </strong></p>
+
+    </div>
+</div>
+<!--很遗憾，您不是河北地区用户暂不能参与此活动-->
+
+<!--很遗憾，您不是河北地区用户暂不能参与此活动-->
+<div id="zanweikaishi" class="zhifu_bg0" style="display:none;">
+    <div class="zhifu_c8">
+        <div class="close"><a href="javascript:void(0)" class="zhifu_quxiao0"><img src="images/close.png"/></a></div>
+        <p class="zhifu_c3_img"><img src="images/weixiao.png"/></p>
+        <p><strong>活动暂未开始 </strong>
+        <p><strong> </strong></p>
+
+    </div>
+</div>
+<!--很遗憾，您不是河北地区用户暂不能参与此活动-->
+
+<!--很遗憾，您不是河北地区用户暂不能参与此活动-->
+<div id="bushihebei" class="zhifu_bg0" style="display:none;">
+    <div class="zhifu_c8">
+        <div class="close"><a href="javascript:void(0)" class="zhifu_quxiao0"><img src="images/close.png"/></a></div>
+        <p class="zhifu_c3_img"><img src="images/weixiao.png"/></p>
+        <p><strong>很遗憾，您不是河北地区用户 </strong>
+        <p><strong> 暂不能参与此活动</strong></p>
+
+    </div>
+</div>
+<!--很遗憾，您不是河北地区用户暂不能参与此活动-->
+
+<!--系统维护中
+请您稍后再试......-->
+<div id="zhifujieguo" class="zhifu_bg0" style="display:none;">
+    <div class="zhifu_c8">
+        <div class="close"><a href="javascript:void(0)" class="zhifu_quxiao0"><img src="images/close.png"/></a></div>
+        <p class="zhifu_c3_img"><img src="images/weixiao.png"/></p>
+        <p><strong>获取支付结果中 </strong>
+        <p><strong> 请您稍后......</strong></p>
+    </div>
+</div>
+<!--系统维护中
+请您稍后再试...-->
+
+<!--支付提示-->
+<div class="zhifu_bg" style="display:none;">
+    <div class="zhifu_c">
+        <div class="close2"><a href="javascript:void(0)" id="zhifu_quxiao"><img src="images/close.png"/></a></div>
+        <p><a href="javascript:void(0)" class="yiyuan"><img src="images/yiyuan.png"/></a></p>
+    </div>
+</div>
+<!--支付提示-->
+
+<!--活动规则-->
+<div class="huodongguize_bg" style="display:none;">
+    <div class="huodongguize">
+        <div class="close"><a href="javascript:void(0)" id="hide2"><img src="images/close.png"/></a></div>
+        <div class="huodongguize_img"><img src="images/guize_bg.png"></div>
+        <div class="huodongguize_c2">
+            <p>
+                <span>（一）</span>本月活动共分2期进行（4月1日-4月11日，4月12日-4月25日）<span onclick="pay1()">活动截止日20:00分停止参与；</span></a>开奖时间更改为4月12日上午10点，4月26日上午10点。
+            <p><span>（二）</span>参与活动需支付1元钱，支付成功后获得一个随机的4位抽奖码，每期开奖日当天七星彩（国家体育彩票）开奖后，抽奖码与当日七星彩前四位或后四位数字相同排列相同的用户，可获得本次活动奖品；
+            <p><span>（三）</span>每个用户仅可选择当月2期中的任意1期参加，不论是否中奖，都不可再参加；每期最多发放16部手机，活动期间共发放32部手机，活动奖品为华为Mate 30 Pro。活动奖品为第三方提供的福利奖品，随机发放，不可进行选择；
+            <p><span>（四）</span>活动期间每期支付成功人数需到达60000人以上方可开奖，活动期间每期参与人数上限为80000人，每期活动中奖人数最多16人；
+            <p><span>（五）</span>未中奖的用户（包括支付人员不足未开奖情况）：活动结束后10个工作日<span style="font-size: 14px">10个工作日</span>内服务商将原路返还您支付的1元钱；
+            <p><span>（六）</span>中奖的幸运用户：客服人员会在中奖后10个工作日内电话通知您并指导您填写兑奖信息；请您仔细填写收货信息，工作人员会根据您提供的地址派发奖品。活动期间请保持手机畅通，客服人员将以中国银行手机银行APP注册手机号为准与您取得联系，由于用户手机联络不上等自身原因导致逾期未领奖。视为您自动放弃该奖品；
+            <p><span>（七）</span>禁止作弊：活动期间禁止使用任何插件、外挂，对于非正常手段参与抽奖的客户，我行有权取消其参加活动及中奖资格；
+            <p><span>（八）</span>本活动由河北中行委托第三方科技公司提供技术支持，活动过程中如有疑问请拨打运营商客服电话：400-650-6038（周一至周五9:00–17:30）
+            <p><span>备注：</span>
+                本活动开奖码以中国体彩网七星彩开奖号码为准，疫情期间如遇七星彩开奖时间延迟，请以中国体彩七星彩开奖公告规则为准，我行也会同步更新本活动中奖规则。
+        </div>
+    </div>
+</div>
+<!--活动规则-->
+
+</body>
+</html>

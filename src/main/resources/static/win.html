@@ -1,0 +1,174 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>我的奖品</title>
+    <link type="text/css" rel="stylesheet" href="css/css.css"/>
+    <meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes"/>
+
+
+    <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+
+    <script>
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+
+        $(document).ready(function () {
+
+            let prizeId = GetQueryString("prizeId")
+            $.ajax({
+                url: 'https://boc.pay.zhongyunkj.cn/hbbocpurchase/luckDraw/getPrizeInfo',
+                type: 'get',
+                dataType: 'json',
+                data: {"prizeId": prizeId, "customerId": localStorage.getItem("customerId")},
+                success: function (data) {
+
+                    if (data.status != 200) {
+                        alert(data.msg)
+                    } else {
+                        let myCode = data.data.myCode;
+                        let code1 = data.data.code1;
+                        let code2 = data.data.code2;
+                        let batch = data.data.batch;
+
+
+                        $("#code1").html(code1 + "、" + code2)
+                        $("#batch").html("第" + batch + "期")
+                        $("#myCode").html(myCode)
+
+
+                    }
+
+                },
+                error: function (data) {
+                    alert(data.msg)
+                }
+            })
+
+            $.ajax({
+                url: 'https://boc.pay.zhongyunkj.cn/hbbocpurchase/user/getUserWinningInfo',
+                type: 'get',
+                dataType: 'json',
+                data: {"prizeId": prizeId, "customerId": localStorage.getItem("customerId")},
+                success: function (data) {
+                    if (data.status === 200) {
+                        let name = data.data.name
+                        let address = data.data.address
+                        let phone = data.data.phone
+                        $('#name').val(name)
+                        $('#phone').val(address)
+                        $('#address').val(phone)
+                        $('#name').attr("readonly","readonly")
+                        $('#phone').attr("readonly","readonly")
+                        $('#address').attr("readonly","readonly")
+                    }
+                },
+                error: function (data) {
+                    alert(data.msg)
+                }
+            })
+
+            $("#zhifu0").click(function () {
+
+                let name = $('#name').val()
+                let phone = $('#phone').val()
+                let address = $('#address').val()
+                let prizeId = GetQueryString("prizeId")
+
+                $.ajax({
+                    url: 'https://boc.pay.zhongyunkj.cn/hbbocpurchase/luckDraw/submitPrizeInfo',
+                    type: 'get',
+                    dataType: 'json',
+                    data: {
+                        "prizeId": prizeId,
+                        "customerId": localStorage.getItem("customerId"),
+                        "name": name,
+                        "phone": phone,
+                        "address": address
+                    },
+                    success: function (data) {
+
+                        if (data.status != 200) {
+                            alert(data.msg)
+                        } else {
+                            $(".zhifu_bg0").show();
+                        }
+
+                    },
+                    error: function (data) {
+                        alert(data.msg)
+                    }
+                })
+            });
+            $(".zhifu_quxiao0").click(function () {
+                $(".zhifu_bg0").hide();
+            });
+
+
+        });</script>
+</head>
+
+<body style="background-color:#fffbe8">
+
+<!--wode-->
+<div class="wode"><img src="images/canyu_03.jpg"></div>
+<!--wode-->
+<div class="canyu_bg">
+    <div class="canyu_img"><img src="images/chenggong_bg.png"></div>
+    <div class="canyu_c">
+        <div class="canyu1">本期中奖码分别为：<strong id="code1">0、0</strong></div>
+        <div class="card">
+            <div class="card_img"><img src="images/card.png"></div>
+            <div class="card1">抽奖码</div>
+            <div class="card2" id="myCode">1688</div>
+            <div class="card3" id="batch">第210117期</div>
+            <div class="zj"><img src="images/zj.png"></div>
+        </div>
+    </div>
+</div>
+<!--xiangqing-->
+<div class="xiangqing">
+
+
+    <div class="xiangqing_t">领取规则</div>
+    <div class="xiangqing_c">
+        <p>1.中奖用户请保持手机畅通，工作人员会在中奖的5个工作日内与您联系，由于用户手机联络不上等自身原因导致逾期（超过10天）未领奖，将视为客户自动放弃该奖品。
+        <p>2.中奖用户请您仔细填写下方收货信息，工作人员会根据您提供的地址邮寄奖品。
+            <div class="dizhi_bg">
+                <div class="dizhi_c">
+                    <input id="name" type="text" value="收货人" class="txt1"
+                           onfocus="if(this.value==defaultValue) {this.value='';this.type='text'}"
+                           onblur="if(!value) {value=defaultValue; this.type='text';}"/>
+                    <input id="phone" type="text" value="手机号码" class="txt1"
+                           onfocus="if(this.value==defaultValue) {this.value='';this.type='text'}"
+                           onblur="if(!value) {value=defaultValue; this.type='text';}"/>
+                    <input id="address" type="text" value="详细地址" class="txt1"
+                           onfocus="if(this.value==defaultValue) {this.value='';this.type='text'}"
+                           onblur="if(!value) {value=defaultValue; this.type='text';}"/>
+        <p align="center"><input name="" type="button" class="querentijiao" id="zhifu0"></p></div>
+</div>
+
+</div>
+<p><span>注</span>：本活动奖品为中国银行河北省分行提供的福利产品，免费发放，颜色将随机发放，无固定颜色，奖品不可折现，奖品一经送出，不支持更换。
+</p>
+</div>
+<!--xiangqing-->
+<!--恭喜您信息提交成功！-->
+
+<div class="zhifu_bg0" style="display:none;">
+    <div class="zhifu_c8">
+        <div class="close"><a href="javascript:void(0)" class="zhifu_quxiao0"><img src="images/close.png"/></a></div>
+        <p class="zhifu_c3_img"><img src="images/weixiao.png"/></p>
+        <p><strong>恭喜您信息提交成功 </strong>
+        </p>
+    </div>
+</div>
+
+<!--恭喜您信息提交成功！-->
+<div class="back2"><a href="./index.html"><img src="images/back2.png"/></a></div>
+</body>
+</html>

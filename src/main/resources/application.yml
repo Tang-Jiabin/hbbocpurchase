@@ -1,0 +1,57 @@
+server:
+  port: 8085
+  servlet:
+    context-path: /hbbocpurchase
+  compression:
+    enabled: true
+    mime-types: application/javascript,text/css,application/json,application/xml,text/html,text/xml,text/plain
+
+
+spring:
+  datasource:
+    name: mysql
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #基本属性
+    url: jdbc:mysql://rm-2ze86h7sw4xwta0h2ao.mysql.rds.aliyuncs.com:3306/hb_boc_purchase?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&autoReconnect=true
+    username: zy_tjb
+    password: zykj@tjb123
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    database-platform: com.zykj.purchase.MySQL5InnoDBDialectUtf8mb4
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 500
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
+    open-in-view: false
+
+  redis:
+    host: 101.200.220.90
+    port: 6379
+    password: zykj@123
+    database: 12
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+logging:
+  level:
+    root: info
+  file:
+    name: ./logs/purchase.log
+
+bank:
+  merchantNo: '104130173720026'
+  orderUrl: 'https://boc.pay.zhongyunkj.cn/hbbocpurchase/pay/payRsps'
+  keyStorePath: '/secret/104130173720026.pfx'
+  keystorePwd: 'zykj123456'
+  certificatePath: '/secret/zykey.cer'
+  storePath: '/secret/zykj.keystore'
+  alias: 'zykj'
+  storePw: 'zykj123zykj'
+  keyPw: 'zykj123zykj'
+  redisBuffersNumber: '50'

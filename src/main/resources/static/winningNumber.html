@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>我的奖品</title>
+    <link type="text/css" rel="stylesheet" href="css/css.css"/>
+    <meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes"/>
+
+
+
+    <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+    <script type="text/javascript">
+
+        $(function (){
+
+            $.ajax({
+                url: 'https://boc.pay.zhongyunkj.cn/hbbocpurchase/luckDraw/getDrawCode',
+                type: 'get',
+                dataType: 'json',
+                data: {"prizeId":localStorage.getItem("prizeId"),"customerId":localStorage.getItem("customerId")},
+                success: function (data) {
+
+                    if (data.status != 200) {
+                        alert(data.msg)
+                    } else {
+                        let code = data.data.code;
+                        let batch = data.data.batch;
+                        let drawDate = data.data.drawDate;
+
+                        $("#code").html(code)
+                        $("#batch").html(""+batch+"")
+                        $("#drawDate").html("中奖名单将在"+drawDate+"公布")
+                        $("#openDate").html("开奖结果以七星彩"+drawDate+"日开奖为准")
+
+                    }
+
+                },
+                error: function (data) {
+                    alert(data.msg)
+                }
+            })
+
+
+
+        })
+
+
+    </script>
+</head>
+
+<body style="background-color:#fffbe8">
+
+<!--wode-->
+<div class="wode"><img src="images/canyu_03.jpg"></div>
+<!--wode-->
+<div class="canyu_bg">
+    <div class="canyu_img"><img src="images/chenggong_bg.png"></div>
+    <div class="canyu_c">
+        <div class="canyu1" id="drawDate"></div>
+        <div class="card">
+            <div class="card_img"><img src="images/card.png"></div>
+            <div class="card1">抽奖码</div>
+            <div class="card2" style="color: #ffffff" id="code">XXXX</div>
+            <div class="card3" id="batch">第一期</div>
+        </div>
+        <div class="canyu1" id="openDate" ></div>
+    </div>
+</div>
+
+<div class="back2"><a href="./index.html"><img src="images/back2.png"/></a></div>
+</body>
+</html>

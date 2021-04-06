@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>我的奖品</title>
+    <link type="text/css" rel="stylesheet" href="css/css.css"/>
+    <meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes"/>
+
+    <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+    <script type="text/javascript" >
+
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+
+        $(function (){
+
+            let prizeId = GetQueryString("prizeId")
+            $.ajax({
+                url: 'https://boc.pay.zhongyunkj.cn/hbbocpurchase/luckDraw/getPrizeInfo',
+                type: 'get',
+                dataType: 'json',
+                data: {"prizeId":prizeId,"customerId":localStorage.getItem("customerId")},
+                success: function (data) {
+
+                    if (data.status != 200) {
+                        alert(data.msg)
+                    } else {
+                        let myCode = data.data.myCode;
+                        let code1 = data.data.code1;
+                        let code2 = data.data.code2;
+                        let batch = data.data.batch;
+
+                        $("#code1").html("本期中奖码分别为："+code1+"、"+code2)
+                        $("#batch").html(batch)
+                        $("#myCode").html(myCode)
+
+                    }
+
+                },
+                error: function (data) {
+                    alert(data.msg)
+                }
+            })
+
+        })
+
+    </script>
+
+</head>
+
+<body style="background-color:#fffbe8">
+
+<!--wode-->
+<div class="wode"><img src="images/canyu_03.jpg"></div>
+<!--wode-->
+<div class="canyu_bg">
+    <div class="canyu_img"><img src="images/chenggong_bg.png"></div>
+    <div class="canyu_c">
+        <div class="canyu1" id="code1">本期中奖码分别为：XXXX、XXXX</div>
+        <div class="card">
+            <div class="card_img"><img src="images/card2.png"></div>
+            <div class="card1">抽奖码</div>
+            <div class="card2" id="myCode">XXXX</div>
+            <div class="card3" id="batch">第XXXXXX期</div>
+            <div class="zj"><img src="images/qj.png"></div>
+        </div>
+    </div>
+</div>
+
+<div class="back2"><a href="./index.html"><img src="images/back2.png"/></a></div>
+</body>
+</html>
